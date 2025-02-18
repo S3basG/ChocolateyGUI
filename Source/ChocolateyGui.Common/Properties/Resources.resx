@@ -1220,7 +1220,7 @@ Please contact your System Administrator to enable this operation.</value>
     <comment>{0} = The id of the package that is going to be reinstalled</comment>
   </data>
   <data name="Dialog_AreYouSureUninstallMessage" xml:space="preserve">
-    <value>This action will attempt to uninstall the '{0}' package. Are you sure you want to proceed?</value>
+    <value>You currently have a newer version of the 'PACKAGE_NAME' package installed. Are you sure you want to proceed?</value>
     <comment>{0} = The id of the package that is going to be uninstalled</comment>
   </data>
   <data name="SettingsView_SearchWatermark" xml:space="preserve">
