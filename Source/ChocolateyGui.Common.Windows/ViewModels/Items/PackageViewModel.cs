@@ -451,6 +451,7 @@ namespace ChocolateyGui.Common.Windows.ViewModels.Items
             }
         }
 
+        
         public async Task Reinstall()
         {
             try
@@ -458,11 +459,20 @@ namespace ChocolateyGui.Common.Windows.ViewModels.Items
                 var confirmationResult = MessageDialogResult.Affirmative;
                 if (!_configService.GetEffectiveConfiguration().SkipModalDialogConfirmation.GetValueOrDefault(false))
                 {
-                    confirmationResult = await _dialogService.ShowConfirmationMessageAsync(
-                        L(nameof(Resources.Dialog_AreYouSureTitle)),
-                        L(nameof(Resources.Dialog_AreYouSureReinstallMessage), Id));
+                    var installedPackage = await _chocolateyService.GetByVersionAndIdAsync(Id, Version.ToNormalizedStringChecked(), IsPrerelease);
+                    if (installedPackage != null && installedPackage.Version > Version)
+                    {
+                        confirmationResult = await _dialogService.ShowConfirmationMessageAsync(
+                            L(nameof(Resources.Dialog_AreYouSureTitle)),
+                            L(nameof(Resources.Dialog_AreYouSureUninstallMessage), Id));
+                    }
+                    else
+                    {
+                        confirmationResult = await _dialogService.ShowConfirmationMessageAsync(
+                            L(nameof(Resources.Dialog_AreYouSureTitle)),
+                            L(nameof(Resources.Dialog_AreYouSureReinstallMessage), Id));
+                    }
                 }
-
                 if (confirmationResult == MessageDialogResult.Affirmative)
                 {
                     using (await StartProgressDialog(L(nameof(Resources.PackageViewModel_ReinstallingPackage)), L(nameof(Resources.PackageViewModel_ReinstallingPackage)), Id))
@@ -481,6 +491,7 @@ namespace ChocolateyGui.Common.Windows.ViewModels.Items
                     L(nameof(Resources.PackageViewModel_RanIntoInstallError), Id, ex.Message));
             }
         }
+                
 
         public async Task Uninstall()
         {
